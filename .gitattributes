@@ -1,1 +1,6 @@
 docs/handoff/evidence/2026-08-01-pipeline-speed-full-cold-ab/* text eol=lf
+*.hwp binary
+*.hwpx binary
+*.jar binary
+*.ps1 text eol=crlf
+*.sh text eol=lf

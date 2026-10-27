@@ -1,3 +1,23 @@
+# koscom-doc-pack — PPT와 한글을 골라 쓰는 코스콤 문서 워크스페이스 (사내 전용)
+
+> **구축 중(P0 완료).** 이 저장소는 아래 Deck Design Pack에 한글(.hwp) 보고서 스킬과 코쇠 삽화 스킬을 더한 **비공개** 통합판입니다. 한글 템플릿은 코스콤 사내 서식이므로 외부로 배포하지 마세요.
+
+| 형식 | 스킬 | 이렇게 요청 |
+|---|---|---|
+| PPT(.pptx) | `ppt-master` 외 4종 (아래 본문) | "이 자료로 임원 보고용 PPT 만들어줘" |
+| 한글(.hwp) | [`koscom-hwp-report`](.claude/skills/koscom-hwp-report/README.md) | "팀장님께 올릴 요약보고 한글 파일로 만들어줘" |
+| 삽화(PNG) | [`koscom-kosoe-illustrations`](.claude/skills/koscom-kosoe-illustrations/SKILL.md) | "이 기획서에 코쇠 삽화 넣어줘" |
+
+**처음 받았을 때:** 아래 빠른 시작대로 설치한 뒤, 저장소 루트에서 시작 점검을 돌립니다. 한글 경로는 Java 8 이상이 필요하고, 결과 화면 확인에는 Windows와 한컴 뷰어가 필요합니다.
+
+```bash
+python .claude/skills/koscom-doc-pack/scripts/doctor.py --smoke
+```
+
+가져온 저장소와 갱신 방법: [`VENDOR.md`](VENDOR.md)
+
+---
+
 # Deck Design Pack — 클론 하나로 끝나는 프레젠테이션 워크스페이스
 
 [![Output](https://img.shields.io/badge/output-native%20PPTX%20(DrawingML)-217346)](#자주-묻는-것)

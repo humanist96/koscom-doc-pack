@@ -1,0 +1,6 @@
+interface:
+  display_name: "코스콤 코쇠 삽화"
+  short_description: "코스콤 CI 색과 코쇠 IP로 한국어 문서용 담백·엉뚱한 손그림 삽화를 만든다"
+  default_prompt: "Use $koscom-kosoe-illustrations 이 문서에 들어갈 코쇠 본문 삽화를 기획하고 생성해줘."
+policy:
+  allow_implicit_invocation: true

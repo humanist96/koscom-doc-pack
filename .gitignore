@@ -31,3 +31,6 @@ Thumbs.db
 
 # Deck template contact-sheet rendering scratch
 _preview_render/
+
+# koscom-doc-pack — company privacy tool output and HWP preview scratch
+*.pia

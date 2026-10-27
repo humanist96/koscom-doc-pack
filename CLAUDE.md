@@ -1,6 +1,27 @@
 # CLAUDE.md
 
-This file is the project entry point for Claude Code. The ppt-master skill lives at `.claude/skills/ppt-master/` and is auto-discovered by Claude Code.
+This file is the project entry point for Claude Code. This repository is **koscom-doc-pack**:
+the deck-design-pack PPT workspace plus the Koscom Hangul (`.hwp`) report skill and the Kosoe
+illustration skill. All skills live under `.claude/skills/` and are auto-discovered by Claude Code.
+
+## Document format entry (koscom-doc-pack)
+
+Pick the output format first, then follow that format's own entry. Each owner keeps its own gates.
+
+| Request | Entry owner |
+|---|---|
+| PPT / slides / deck / `.pptx` | [`ppt-master/workflows/routing.md`](.claude/skills/ppt-master/workflows/routing.md) (rules below) |
+| Hangul / `.hwp` / Koscom 요약보고·상세보고 / report for approval | [`koscom-hwp-report/SKILL.md`](.claude/skills/koscom-hwp-report/SKILL.md) |
+| Body illustrations with the Kosoe character (either format) | [`koscom-kosoe-illustrations/SKILL.md`](.claude/skills/koscom-kosoe-illustrations/SKILL.md) |
+| Environment check, `.pia`-encrypted templates, upstream updates | [`koscom-doc-pack/SKILL.md`](.claude/skills/koscom-doc-pack/SKILL.md) |
+
+- A format-level router (PPT / Hangul / both from one blueprint) and a Hangul template catalog are
+  planned additions to `koscom-doc-pack`; until then, an unstated format for "보고서" means Hangul,
+  and "기획서·제안서" with no format named gets one question: Hangul, PPT, or both.
+- This repository is **private**. The Hangul templates are Koscom internal forms: never copy them,
+  or any change that touches them, into the public upstreams (see [`VENDOR.md`](VENDOR.md)).
+- The company privacy tool may encrypt `.hwp` files to `.hwp.pia`. Never try to decrypt or bypass
+  it; run `doctor.py` and ask the user to restore the file.
 
 > **Cross-harness (dual-host)**: [`AGENTS.md`](AGENTS.md) is the Codex-side execution-rules layer — it references this file as SSOT and only adds enforcement, so content edits here do not need mirroring there. `.codex/skills/` holds **generated** Codex discovery stubs: after editing any `.claude/skills/<name>/SKILL.md` frontmatter, run `python3 .claude/skills/ppt-master/scripts/sync_codex_stubs.py` (never hand-edit stubs; `preflight.py` fails while they are stale). Skill content itself lives only in `.claude/skills/`.
 
@@ -47,6 +68,8 @@ re-architectable source. Do not load either full owner before that answer.
 
 ## Font Policy (install-local, standing preference)
 
+- Scope: this policy covers PPT decks only. Hangul `.hwp` output keeps the fonts of its Koscom
+  template (함초롬바탕·HY헤드라인M etc.); do not apply Pretendard there.
 - Every SVG-authored deck uses **Pretendard** as the fixed font family — do not propose or pick other families unless the user explicitly asks in the current conversation. Hierarchy comes from weight/size, not family switching. Direct-PPTX routes preserve source fonts unless their selected owner says otherwise. Full contract: [`strategist.md §g` install-local font lock](.claude/skills/ppt-master/references/strategist.md).
 - Stack: `Pretendard, "Malgun Gothic", sans-serif`; intermediate weights use installed family names (`"Pretendard Medium"`, `"Pretendard SemiBold"`, etc.).
 - Font files are bundled at [`.claude/skills/ppt-master/assets/fonts/Pretendard/`](.claude/skills/ppt-master/assets/fonts/Pretendard/) (SIL OFL) and installed user-level on this machine. PPTX does not embed fonts — decks shared to other machines need Pretendard installed there.
@@ -93,9 +116,10 @@ of treating a root-level command list as a gate checklist.
 - `docs/rules/` — repo-wide style rules.
 - `projects/` — user project workspace.
 
-## This repository: deck-design-pack
+## Base workspace: deck-design-pack
 
-This is [humanist96/deck-design-pack](https://github.com/humanist96/deck-design-pack) — the
+koscom-doc-pack is built on [humanist96/deck-design-pack](https://github.com/humanist96/deck-design-pack)
+(git remote `upstream-deck`; other sources and update steps in [`VENDOR.md`](VENDOR.md)) — the
 ppt-master workflow above, vendored from
 [byungjunjang/slide-master](https://github.com/byungjunjang/slide-master) (MIT, © 2025-2026 Hugo He;
 see [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)), with seven additional deck templates
