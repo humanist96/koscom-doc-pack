@@ -28,9 +28,10 @@ below add Codex-side enforcement; they never override the selected owner.
 
 ## Format first (koscom-doc-pack)
 
-Pick the output format before loading any full owner; the table and rules are in the
-"Document format entry" section of [`CLAUDE.md`](CLAUDE.md). PPT requests continue with the
-procedure below. Hangul (`.hwp`) requests load
+Pick the output format before loading any full owner: read
+[`.claude/skills/koscom-doc-pack/workflows/doc-routing.md`](.claude/skills/koscom-doc-pack/workflows/doc-routing.md)
+first for any document request. It owns format selection and the single question for ambiguous
+requests. PPT requests continue with the procedure below. Hangul (`.hwp`) requests load
 [`koscom-hwp-report/SKILL.md`](.claude/skills/koscom-hwp-report/SKILL.md) in full and follow it;
 its scripts are PowerShell + Java (`scripts/render.ps1`, `scripts/preview.ps1`). Run
 `python .claude/skills/koscom-doc-pack/scripts/doctor.py` when a Hangul or illustration step

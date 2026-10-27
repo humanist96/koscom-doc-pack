@@ -1,6 +1,6 @@
 ---
 name: koscom-doc-pack
-description: koscom-doc-pack 워크스페이스(PPT·한글·코쇠 삽화 통합)의 시작 점검과 상류 저장소 갱신을 맡는다. "문서팩 점검", "doctor", "환경 확인", "한글 렌더러가 안 돼", "템플릿이 .pia로 바뀌었어", "상류 업데이트 받아줘", "deck-design-pack/한글 스킬/코쇠 스킬 최신으로" 같은 요청에 쓴다. PPT나 한글 문서를 만드는 요청 자체는 각 형식의 스킬(ppt-master, koscom-hwp-report)이 맡는다.
+description: 사내 문서를 만들어 달라는 요청에서 출력 형식(PPT .pptx · 한글 .hwp · 둘 다)을 먼저 정하는 최상위 라우터이자 koscom-doc-pack 워크스페이스 운영 스킬. 보고서·기획서·제안서·계획서·발표자료·장표·요약보고·결과보고·소개자료처럼 문서를 새로 만들거나 채우는 요청이면 형식 담당 스킬을 읽기 전에 workflows/doc-routing.md로 형식을 정한다. "기획서 만들어줘"처럼 형식이 애매하면 한 번만 묻고, "보고서랑 발표자료 둘 다"면 두 형식을 같은 내용으로 만든다. "문서팩 점검", "doctor", "한글 렌더러가 안 돼", "템플릿이 .pia로 바뀌었어", "상류 업데이트 받아줘" 같은 환경·운영 요청에도 쓴다.
 ---
 
 # koscom-doc-pack (Codex discovery stub)

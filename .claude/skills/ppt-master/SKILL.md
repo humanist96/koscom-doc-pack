@@ -9,7 +9,9 @@ description: >
   workflows/routing.md first. Do not use for ambiguous existing-PPTX
   optimization, reusable-template creation, raw-PPTX native filling, or
   finished-PPTX native enhancement; those are pre-route or standalone
-  workflow requests.
+  workflow requests. In koscom-doc-pack, a document request whose format
+  (PPT or Hangul .hwp) is not stated goes through the koscom-doc-pack
+  router first.
 ---
 
 # PPT Master Skill

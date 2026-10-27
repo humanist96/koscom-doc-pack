@@ -11,6 +11,20 @@ koscom-doc-pack은 세 저장소를 하나로 묶은 비공개 워크스페이�
 - 코쇠 저장소의 `character/`·`examples/` 원본 폴더는 가져오지 않는다. 스킬이 쓰는 캐릭터 시트와 예시는 스킬 폴더 안에 이미 있다.
 - 한글 스킬 subtree의 기준 커밋은 subtree 병합 커밋 메시지의 `git-subtree-split` 값과 같다.
 
+## 상류 파일을 고친 곳
+
+상류에서 온 파일 중 이 저장소가 고친 곳이다. 상류 갱신 때 충돌이 나면 이 목록을 보고 우리 변경을 다시 적용한다.
+
+| 파일 | 고친 내용 |
+|---|---|
+| `CLAUDE.md`, `AGENTS.md` | 형식 결정(doc-routing.md) 진입, 비공개·`.pia` 규칙, Pretendard 규칙을 PPT로 한정 |
+| `README.md` | 맨 위 koscom-doc-pack 안내 |
+| `.gitattributes`, `.gitignore` | hwp·jar 바이너리, ps1·sh 줄바꿈, `*.pia` 제외 |
+| `.claude/skills/ppt-master/SKILL.md` | description 끝에 "형식이 애매하면 koscom-doc-pack 라우터 먼저" 한 문장 |
+| `.claude/skills/koscom-hwp-report/SKILL.md` | description 끝에 같은 취지 한 문장 |
+
+- 코쇠 스킬 폴더는 고치지 않는다. `update_vendor.py kosoe`가 폴더를 통째로 덮어쓰기 때문이다. 고칠 것이 있으면 상류 저장소에서 고친 뒤 가져온다.
+
 ## 갱신
 
 모두 `scripts/update_vendor.py`로 한다. `--dry-run`으로 먼저 확인한다.

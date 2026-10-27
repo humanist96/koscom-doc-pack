@@ -6,18 +6,24 @@ illustration skill. All skills live under `.claude/skills/` and are auto-discove
 
 ## Document format entry (koscom-doc-pack)
 
-Pick the output format first, then follow that format's own entry. Each owner keeps its own gates.
+**Format before route (mandatory)**: for any request to create or fill a document (report,
+proposal, plan, deck, slides, 보고서·기획서·제안서·발표자료·요약보고 …), first read
+[`.claude/skills/koscom-doc-pack/workflows/doc-routing.md`](.claude/skills/koscom-doc-pack/workflows/doc-routing.md)
+and pick the output format there. It owns format selection (PPT / Hangul / both / unsupported) and
+the one question for ambiguous requests. Then load only that format's entry owner; each owner keeps
+its own gates.
 
-| Request | Entry owner |
+| Format | Entry owner |
 |---|---|
 | PPT / slides / deck / `.pptx` | [`ppt-master/workflows/routing.md`](.claude/skills/ppt-master/workflows/routing.md) (rules below) |
 | Hangul / `.hwp` / Koscom 요약보고·상세보고 / report for approval | [`koscom-hwp-report/SKILL.md`](.claude/skills/koscom-hwp-report/SKILL.md) |
-| Body illustrations with the Kosoe character (either format) | [`koscom-kosoe-illustrations/SKILL.md`](.claude/skills/koscom-kosoe-illustrations/SKILL.md) |
+| Both from the same content | `doc-routing.md` §5 |
+| Body illustrations with the Kosoe character only | [`koscom-kosoe-illustrations/SKILL.md`](.claude/skills/koscom-kosoe-illustrations/SKILL.md) |
 | Environment check, `.pia`-encrypted templates, upstream updates | [`koscom-doc-pack/SKILL.md`](.claude/skills/koscom-doc-pack/SKILL.md) |
 
-- A format-level router (PPT / Hangul / both from one blueprint) and a Hangul template catalog are
-  planned additions to `koscom-doc-pack`; until then, an unstated format for "보고서" means Hangul,
-  and "기획서·제안서" with no format named gets one question: Hangul, PPT, or both.
+- In this repository, document requests use these repo-local owners. Do not route them to generic
+  document skills from the user's environment (for example `pptx`, `docx`, `docs`) unless the user
+  names that skill or a format this pack does not make (`doc-routing.md` §4).
 - This repository is **private**. The Hangul templates are Koscom internal forms: never copy them,
   or any change that touches them, into the public upstreams (see [`VENDOR.md`](VENDOR.md)).
 - The company privacy tool may encrypt `.hwp` files to `.hwp.pia`. Never try to decrypt or bypass
@@ -25,7 +31,7 @@ Pick the output format first, then follow that format's own entry. Each owner ke
 
 > **Cross-harness (dual-host)**: [`AGENTS.md`](AGENTS.md) is the Codex-side execution-rules layer — it references this file as SSOT and only adds enforcement, so content edits here do not need mirroring there. `.codex/skills/` holds **generated** Codex discovery stubs: after editing any `.claude/skills/<name>/SKILL.md` frontmatter, run `python3 .claude/skills/ppt-master/scripts/sync_codex_stubs.py` (never hand-edit stubs; `preflight.py` fails while they are stale). Skill content itself lives only in `.claude/skills/`.
 
-**Route before full-load (mandatory)**: for a presentation request, first read
+**Route before full-load (mandatory)**: once the format is PPT, first read
 [`.claude/skills/ppt-master/workflows/routing.md`](.claude/skills/ppt-master/workflows/routing.md).
 Select the route there, then read only the selected execution owner(s) in full.
 Do not preload the main SVG skill for a direct-PPTX route. For a repository edit,
@@ -95,7 +101,8 @@ of treating a root-level command list as a gate checklist.
 
 | Work | Runtime authority |
 |---|---|
-| Route selection | [`routing.md`](.claude/skills/ppt-master/workflows/routing.md) |
+| Output format selection (PPT / Hangul / both) | [`doc-routing.md`](.claude/skills/koscom-doc-pack/workflows/doc-routing.md) |
+| PPT route selection | [`routing.md`](.claude/skills/ppt-master/workflows/routing.md) |
 | Main SVG generation and re-architecture | [`ppt-master/SKILL.md`](.claude/skills/ppt-master/SKILL.md) |
 | Strict 1:1 SVG beautify | [`beautify-pptx.md`](.claude/skills/ppt-master/workflows/beautify-pptx.md) and only the shared main steps it invokes |
 | Raw template fill | [`ppt-template-fill/SKILL.md`](.claude/skills/ppt-template-fill/SKILL.md) |
