@@ -156,8 +156,21 @@ def check_hwp_optional() -> list[str]:
     return []
 
 
+def check_hwp_presets() -> list[str]:
+    """문서 유형 템플릿 목록(presets_index.json)이 preset.md와 맞는지 본다."""
+    script = HWP_SKILL / "scripts" / "presets.py"
+    if not script.is_file():
+        return []
+    proc = subprocess.run([sys.executable, str(script), "index", "--check"], capture_output=True,
+                          text=True, encoding="utf-8", errors="replace")
+    if proc.returncode == 0:
+        return []
+    detail = (proc.stdout.strip().splitlines() or [proc.stderr.strip() or "알 수 없는 오류"])[-1]
+    return [f"문서 유형 템플릿 목록 문제: {detail}"]
+
+
 def check_hwp(smoke: bool) -> tuple[list[str], list[str]]:
-    failures = check_java() + check_hwp_templates()
+    failures = check_java() + check_hwp_templates() + check_hwp_presets()
     if smoke and not failures:
         failures += render_hwp_samples()
     return failures, check_hwp_optional()
