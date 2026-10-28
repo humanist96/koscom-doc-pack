@@ -346,8 +346,19 @@ public class Renderer extends HwpOps {
     final Map<Integer, Double> pageUsed = new HashMap<>();
     final java.util.Set<Integer> pageBreaks = new java.util.TreeSet<>();
     final Map<Integer, Boolean> pageHasObject = new HashMap<>();
+    /** 그림이 다음 쪽으로 넘어가며 남긴 빈 공간 경고. paginate가 채우고 spillWarnings가 내보낸다. */
+    final List<String> blankWarnings = new ArrayList<>();
     /** 쪽 넘침 경고로 볼 마지막 쪽 줄 수 상한. */
     static final int SPILL_LINES = 3;
+    /** 그림 때문에 이 비율 넘게 쪽이 비면 경고한다. */
+    static final double BLANK_RATIO = 0.25;
+
+    /** 그림(과 캡션)이 남은 공간에 안 들어가 다음 쪽으로 넘어갈 때, 비는 공간이 크면 경고를 남긴다. */
+    void noteBlank(Paragraph p, int page, double y, double H) {
+        if (picture(p) == null || H - y < H * BLANK_RATIO) return;
+        blankWarnings.add(String.format("그림 빈 공간: %d쪽 아래가 약 %.0fpt(%.0f%%) 비고 그림이 %d쪽으로 넘어감 — 그림 폭을 줄이거나 그림 뒤 문단을 그림 앞으로 옮길 것",
+                page, H - y, (H - y) / H * 100, page + 1));
+    }
 
     double bodyHeight() {
         for (Control ct : c.proto("SECTION").getControlList())
@@ -364,7 +375,7 @@ public class Renderer extends HwpOps {
      */
     Map<Paragraph, Integer> paginate(List<Paragraph> body) {
         Map<Paragraph, Integer> out = new java.util.IdentityHashMap<>();
-        pageLines.clear(); pageUsed.clear(); pageBreaks.clear(); pageHasObject.clear();
+        pageLines.clear(); pageUsed.clear(); pageBreaks.clear(); pageHasObject.clear(); blankWarnings.clear();
         double H = bodyHeight(), y = 0;
         int page = 0;
         for (int idx = 0; idx < body.size(); idx++) {
@@ -377,11 +388,11 @@ public class Renderer extends HwpOps {
                 int k = idx + 1;
                 while (k < body.size() && body.get(k).getText() == null && body.get(k).getControlList() == null) need += lineHeight(body.get(k++));
                 if (k < body.size()) need += isObject(body.get(k)) ? objectHeight(body.get(k)) : lineHeight(body.get(k));
-                if (y + need > H) { page++; y = 0; }
+                if (y + need > H) { noteBlank(p, page, y, H); page++; y = 0; }
             }
             if (isObject(p)) {
                 double h = objectHeight(p);
-                if (y > 0 && y + h > H) { page++; y = 0; }
+                if (y > 0 && y + h > H) { noteBlank(p, page, y, H); page++; y = 0; }
                 out.put(p, page);
                 if (DEBUG) System.out.printf("DEBUG page %d y=%6.1f h=%6.1f [표·그림] %s%n", page, y, h, abbrev(firstText(p)));
                 pageHasObject.put(page, true);
@@ -433,6 +444,7 @@ public class Renderer extends HwpOps {
                 warnings.add(String.format("쪽 넘침: %d쪽에 글 %d줄만 넘어감(약 %.0fpt) — 그만큼 줄이면 %d쪽에 들어감",
                         end, n, pageUsed.getOrDefault(end, 0.0), end - 1));
         }
+        warnings.addAll(blankWarnings);
     }
 
     boolean isObject(Paragraph p) { return firstTable(p) != null || picture(p) != null; }
@@ -687,6 +699,7 @@ public class Renderer extends HwpOps {
         long[] rowH = new long[R];
         List<Cell> cells = new ArrayList<>();
         Map<Cell, Long> need = new HashMap<>();
+        List<String> wrapped = new ArrayList<>();
         for (Row r : t.getRowList())
             for (Cell cell : r.getCellList()) {
                 cells.add(cell);
@@ -700,7 +713,9 @@ public class Renderer extends HwpOps {
                     List<Run> rs = getRuns(cp);
                     if (rs.isEmpty()) { lines++; continue; }
                     size = csOf(rs.get(0).cs).getBaseSize() / 100.0;
-                    lines += Layout.lines(segs(rs), avail, avail, true).size();
+                    int n = Layout.lines(segs(rs), avail, avail, true).size();
+                    if (n > 1) wrapped.add(abbrev(plainText(cp).trim()));
+                    lines += n;
                 }
                 long base = cell.getListHeader().getHeight();
                 need.put(cell, Math.round(base + Math.max(0, lines - 1) * size * 160));
@@ -723,6 +738,10 @@ public class Renderer extends HwpOps {
             cell.getListHeader().setHeight(h);
         }
         t.getHeader().setHeight(total);
+        if (!wrapped.isEmpty())
+            warnings.add(String.format("[표] 칸 글자가 칸 폭을 넘어 줄바꿈 %d곳: %s — 칸 문장을 \\n으로 짧게 나누거나 widths를 빼고 자동 너비로",
+                    wrapped.size(), String.join(" / ", wrapped.subList(0, Math.min(3, wrapped.size())))
+                            + (wrapped.size() > 3 ? " …" : "")));
     }
 
     void checkLines(Paragraph p, String block, String text) {

@@ -124,6 +124,13 @@ public class DetailRenderer extends Renderer {
 
     // ================================================================= 표지
 
+    /**
+     * 표지 제목(HY헤드라인M 32) 글자 폭 배율. 본문 글꼴(함초롬바탕) 기준 글자 폭 표에 곱한다.
+     * 뷰어 캡처 5건(칸 폭 437.7pt)에서 "한 줄에 들어감" 13.47em, "넘어감" 13.61em이 갈라지는 구간(1.001~1.012)의
+     * 위쪽 값을 쓴다. 줄 수를 많게 세면 표지 빈 줄을 조금 더 덜 뿐이지만, 적게 세면 표지가 두 쪽으로 넘친다(2026-10-29).
+     */
+    static double COVER_SCALE = 1.008;
+
     /** 표지 제목이 여러 줄이면 그만큼 제목 아래 빈 문단을 덜어 표지가 한 쪽에 들어가게 한다. */
     void fitCoverTitle(List<Paragraph> cover, String title) {
         for (int i = 0; i < cover.size(); i++) {
@@ -133,7 +140,10 @@ public class DetailRenderer extends Renderer {
             List<Run> rs = getRuns(cell.getParagraphList().getParagraph(0));
             if (rs.isEmpty()) return;
             double avail = (cell.getListHeader().getWidth() - 1020) / 100.0;
-            int lines = Layout.lines(segs(rs), avail, avail, true).size();
+            List<Layout.Seg> sg = new ArrayList<>();
+            for (Layout.Seg s : segs(rs)) sg.add(new Layout.Seg(s.text, s.size * COVER_SCALE, s.bold, s.spc));
+            int lines = Layout.lines(sg, avail, avail, true).size();
+            if (DEBUG) System.out.printf("DEBUG cover avail=%.1f size=%.1f spc=%d lines=%d %s%n", avail, rs.isEmpty() ? 0 : sg.get(0).size, sg.get(0).spc, lines, Layout.lines(sg, avail, avail, true));
             if (lines > 2) warnings.add("[표지 제목] " + lines + "줄 — 2줄 이내로 줄이는 것을 권장: " + abbrev(title));
             int remove = 2 * (lines - 1);
             for (int k = i + 1; k < cover.size() && remove > 0; ) {
@@ -262,6 +272,8 @@ public class DetailRenderer extends Renderer {
         out.add(p);
         String cap = str(it, "caption", "");
         if (!cap.isEmpty()) {
+            keepNext.add(p);   // 캡션만 다음 쪽으로 떨어지지 않게 그림과 캡션을 묶는다
+
             out.add(c.proto("GAP4"));
             Paragraph cp = c.proto("NOTE");
             setText(cp, cap, c.num("cs.NOTE"));

@@ -142,10 +142,14 @@ koscom-hwp-report/
 │   └── examples/            # 요약·상세 예시 JSON(가명)과 그림
 ├── scripts/
 │   ├── render.ps1           # report.json → .hwp
+│   ├── render_hwp.py        # 같은 렌더링을 Python으로(+ 문서 유형 템플릿 구성 확인)
+│   ├── presets.py           # 문서 유형 템플릿 목록·구성 확인·회귀 시험
+│   ├── crop_image.py        # 그림 흰 여백 자르기(코쇠 삽화 등)
 │   ├── preview.ps1          # 한컴 뷰어로 열림 확인 + 뷰어 창만 캡처
 │   ├── build.ps1            # src/ → koscom-hwp.jar 재빌드(JDK 필요)
 │   └── koscom-hwp.jar       # 렌더러
 ├── templates/               # 요약·상세 기본 템플릿과 블록 카탈로그
+│   └── presets/             # 문서 유형 템플릿 13종(결과보고·계획보고·제안서 등)
 ├── src/                     # 렌더러 소스(Java 8 호환)
 ├── lib/                     # hwplib 1.1.9 (Apache-2.0)
 ├── evals/                   # 평가 과제 3개(claude plugin eval 형식)
